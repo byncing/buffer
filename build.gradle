@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+}
+
+group 'eu.byncing'
+version '1.0.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
