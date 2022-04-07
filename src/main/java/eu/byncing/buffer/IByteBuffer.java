@@ -8,6 +8,10 @@ public interface IByteBuffer {
 
     byte readByte();
 
+    void writeBytes(byte[] value);
+
+    byte[] readBytes();
+
     void writeInt(int value);
 
     int readInt();
@@ -35,6 +39,8 @@ public interface IByteBuffer {
     void writeUUID(UUID value);
 
     UUID readUUID();
+
+    byte[] flip();
 
     byte[] getBytes();
 }
