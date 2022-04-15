@@ -5,51 +5,50 @@ import java.util.UUID;
 
 public class ByteBuffer implements IByteBuffer {
 
-    private byte[] bytes = new byte[2024];
+    private byte[] bytes;
 
-    private int length, write, read;
-
-    public ByteBuffer() {
-        super();
-    }
+    private int write, read;
 
     public ByteBuffer(byte[] bytes) {
         this.bytes = bytes;
+        this.write = bytes.length;
     }
 
-    public ByteBuffer(int length) {
-        this(new byte[length]);
+    public ByteBuffer() {
+        this(new byte[0]);
     }
 
     @Override
     public void writeByte(byte value) {
-        if (write > bytes.length) throw new IndexOutOfBoundsException();
-        bytes[write] = value;
-        write++;
-        length++;
+        byte[] result = new byte[bytes.length + 1];
 
+        result[write++] = value;
+
+        for (int i = 0; i < result.length; i++) {
+            if (i != write && i < bytes.length) result[i] = bytes[i];
+        }
+
+        this.bytes = result;
     }
 
     @Override
     public byte readByte() {
-        byte value;
-        value = bytes[read];
-        read++;
-        return value;
+        if (read > bytes.length - 1) return 0;
+        return bytes[read++];
     }
 
     @Override
-    public void writeBytes(byte[] value) {
-        for (byte b : value) writeByte(b);
+    public void writeBytes(byte[] bytes) {
+        writeInt(bytes.length);
+        for (byte aByte : bytes) writeByte(aByte);
     }
 
     @Override
     public byte[] readBytes() {
         int length = readInt();
-        if (length < 0) throw new NegativeArraySizeException();
-        byte[] result = new byte[length];
-        for (int i = 0; i < length; i++) result[i] = readByte();
-        return result;
+        byte[] bytes = new byte[length];
+        for (int i = 0; i < length; i++) bytes[i] = readByte();
+        return bytes;
     }
 
     @Override
@@ -118,6 +117,7 @@ public class ByteBuffer implements IByteBuffer {
     @Override
     public String readString() {
         int length = readInt();
+        if (length < 1) return "";
         byte[] bytes = new byte[length];
         for (int i = 0; i < bytes.length; i++) bytes[i] = (byte) readInt();
         return new String(bytes, StandardCharsets.UTF_8);
@@ -151,24 +151,29 @@ public class ByteBuffer implements IByteBuffer {
 
     @Override
     public UUID readUUID() {
-        return UUID.fromString(readString());
+        String string = readString();
+        if (string.isEmpty()) return null;
+        return UUID.fromString(string);
     }
 
     @Override
-    public byte[] flip() {
-        byte[] bytes = new byte[length];
+    public ByteBuffer flip() {
+        byte[] bytes = new byte[this.bytes.length];
         int i = 0;
-        for (int i1 = length; i1 > 0; i1--) {
+        for (int i1 = this.bytes.length; i1 > 0; i1--) {
             bytes[i] = this.bytes[i1 - 1];
             i++;
         }
-        return bytes;
+        return new ByteBuffer(bytes);
     }
 
     @Override
     public byte[] getBytes() {
-        byte[] bytes = new byte[length];
-        System.arraycopy(this.bytes, 0, bytes, 0, length);
         return bytes;
+    }
+
+    @Override
+    public boolean isReadable() {
+        return read < bytes.length;
     }
 }

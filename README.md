@@ -16,7 +16,7 @@ public class TestBuffer {
         System.out.println("raw: " + Arrays.toString(buffer.getBytes()));
 
         //flip the bytebuffer
-        System.out.println("flip: " + Arrays.toString(buffer.flip()));
+        System.out.println("flip: " + Arrays.toString(buffer.flip().getBytes()));
 
         System.out.println("name: " + buffer.readString() + ", age: " + buffer.readInt());
     }

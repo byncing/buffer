@@ -40,7 +40,9 @@ public interface IByteBuffer {
 
     UUID readUUID();
 
-    byte[] flip();
+    IByteBuffer flip();
 
     byte[] getBytes();
+
+    boolean isReadable();
 }
