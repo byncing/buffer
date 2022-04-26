@@ -1,5 +1,17 @@
 # buffer
 stores data in bytes
+
+### Get started
+````gradle
+repositories {
+    maven {url('https://repo.byncing.eu/')}
+}
+
+dependencies {
+    implementation('eu.byncing:buffer:1.0.0-SNAPSHOT')
+}
+````
+
 ````java
 package eu.byncing.buffer;
 
