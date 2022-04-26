@@ -86,23 +86,20 @@ public class ByteBuffer implements IByteBuffer {
 
     @Override
     public void writeLong(long value) {
-        do {
-            byte b = (byte) (value & 0b01111111);
-            value >>>= 7;
-            if (value != 0) b |= 0b10000000;
-            writeByte(b);
-        } while (value != 0);
+        for (int i = 7; i >= 0; i--) {
+            writeByte((byte) (value & 0xFF));
+            value >>= Long.BYTES;
+        }
     }
 
     @Override
     public long readLong() {
-        long value = 0;
-        for (int shift = 0; shift < 56; shift += 7) {
-            byte b = readByte();
-            value |= (b & 0x7fL) << shift;
-            if (b >= 0) return value;
+        long result = 0;
+        for (int i = 0; i < 8; i++) {
+            result <<= Long.BYTES;
+            result |= (readByte() & 0xFF);
         }
-        return value | (readByte() & 0xffL) << 56;
+        return result;
     }
 
     @Override
