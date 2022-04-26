@@ -42,6 +42,8 @@ public interface IByteBuffer {
 
     IByteBuffer flip();
 
+    void reset();
+
     byte[] getBytes();
 
     boolean isReadable();

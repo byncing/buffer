@@ -165,6 +165,13 @@ public class ByteBuffer implements IByteBuffer {
     }
 
     @Override
+    public void reset() {
+        write = 0;
+        read = 0;
+        bytes = new byte[0];
+    }
+
+    @Override
     public byte[] getBytes() {
         return bytes;
     }
