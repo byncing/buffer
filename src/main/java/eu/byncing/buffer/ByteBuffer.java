@@ -1,5 +1,6 @@
 package eu.byncing.buffer;
 
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -81,7 +82,7 @@ public class ByteBuffer implements IByteBuffer {
 
     @Override
     public short readShort() {
-        return (short) (128 * ((byte) (readByte() & (byte) 0x7f)) + readByte());
+        return java.nio.ByteBuffer.wrap(new byte[]{readByte(), readByte()}).order(ByteOrder.BIG_ENDIAN).getShort();
     }
 
     @Override
