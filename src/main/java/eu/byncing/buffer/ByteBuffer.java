@@ -75,8 +75,8 @@ public class ByteBuffer implements IByteBuffer {
 
     @Override
     public void writeShort(short value) {
-        writeByte((byte) (((short) (value >> 7)) & ((short) 0x7f) | 0x80));
-        writeByte((byte) ((value & ((short) 0x7f))));
+        writeByte((byte) ((value & 0xFF00) >> 8));
+        writeByte((byte) (value & 0x00FF));
     }
 
     @Override
@@ -86,20 +86,28 @@ public class ByteBuffer implements IByteBuffer {
 
     @Override
     public void writeLong(long value) {
-        for (int i = 7; i >= 0; i--) {
-            writeByte((byte) (value & 0xFF));
-            value >>= Long.BYTES;
+        while (true) {
+            if ((value & ~((long) 0x7F)) == 0) {
+                writeByte((byte) value);
+                return;
+            }
+            writeByte((byte) ((value & 0x7F) | 0x80));
+            value >>>= 7;
         }
     }
 
     @Override
     public long readLong() {
-        long result = 0;
-        for (int i = 0; i < 8; i++) {
-            result <<= Long.BYTES;
-            result |= (readByte() & 0xFF);
+        long value = 0;
+        int position = 0;
+        while (true) {
+            byte aByte = readByte();
+            value |= (long) (aByte & 0x7F) << position;
+            if ((aByte & 0x80) == 0) break;
+            position += 7;
+            if (position >= 64) throw new RuntimeException("Long is too big");
         }
-        return result;
+        return value;
     }
 
     @Override
