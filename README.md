@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation('eu.byncing:buffer:1.0.0-SNAPSHOT')
+    implementation('eu.byncing:buffer:2.0.0-SNAPSHOT')
 }
 ````
 
