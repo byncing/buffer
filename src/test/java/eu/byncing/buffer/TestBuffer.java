@@ -5,16 +5,14 @@ import java.util.Arrays;
 public class TestBuffer {
 
     public static void main(String[] args) {
-        IByteBuffer buffer = new ByteBuffer();
+        NioBuf buf = new NioBuf(0, false);
+        buf.writeBoolean(true);
+        buf.writeInt(19);
 
-        buffer.writeString("byncing");
-        buffer.writeInt(19);
+        System.out.println(Arrays.toString(buf.array()));
 
-        System.out.println("raw: " + Arrays.toString(buffer.getBytes()));
-
-        //flip the bytebuffer
-        System.out.println("flip: " + Arrays.toString(buffer.flip().getBytes()));
-
-        System.out.println("name: " + buffer.readString() + ", age: " + buffer.readInt());
+        buf.reset();
+        System.out.println(buf.readBoolean());
+        System.out.println(buf.readInt());
     }
 }
